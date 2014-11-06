@@ -64,4 +64,8 @@ CardboardApp.init(function(app) {
   app.on('update', function(e) {
     cube.rotation.y += 0.5 * e.detail.dt;
   });
+
+  app.on('click',function(){
+    app.requestFullscreen();
+  })
 });

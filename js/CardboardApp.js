@@ -57,7 +57,6 @@ var CardboardApp = {
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
 
-      renderer.setSize(width, height);
       effect.setSize(width, height);
     }
 
@@ -104,8 +103,28 @@ var CardboardApp = {
     return this;
   },
 
+  /**
+   * Holds application state. Passed to 'update' event listener's event.detail property.
+   */
   State: function() {
     this.dt = 0;
     this.touching = false;
+  },
+
+  /**
+   * Utility method to call renderer canvas's requestFullscreen. Please call this on user gesture event handler.
+   */
+  requestFullscreen: function() {
+    var elem = this.renderer.domElement;
+
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+      elem.msRequestFullscreen();
+    } else if (elem.mozRequestFullScreen) {
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) {
+      elem.webkitRequestFullscreen();
+    }
   }
 };
