@@ -5,13 +5,13 @@ var CardboardApp = {
   near: 0.01,
   // Caemra far crop
   far: 1000,
-  // Touch state
-  touching: false,
 
   /**
-   * Call this function first. callback function is called with arguments scene, camera, renderer.
+   * Call this function first. callback function is called with CardboardApp instance to get scene, renderer and camera.
+   * callback is optional.
+   * You can simply call CardboardApp.init(targetElement) and get CardboardApp.scene, CardboardApp.camera etc.
    */
-  init: function(containerElement, callback) {
+  init: function(callback) {
     var app = this;
 
     var renderer = app.renderer = new THREE.WebGLRenderer({
@@ -21,31 +21,33 @@ var CardboardApp = {
       scene = app.scene = new THREE.Scene(),
       camera = app.camera = new THREE.PerspectiveCamera(app.fov, 1, app.near, app.far);
 
-    containerElement.appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
 
     var clock = new THREE.Clock();
+    var state = new CardboardApp.State();
 
     // Gyro control
     var controls = new THREE.DeviceOrientationControls(camera, true);
     controls.connect();
     controls.update();
 
-    window.addEventListener('resize', resize, false);
+    // Adjust viewport size
     setTimeout(resize, 1);
+    window.addEventListener('resize', resize, false);
 
     // Basic event handlers
     app.on('touchstart', function(e) {
-      app.touching = true;
+      state.touching = true;
     }).on('touchend', function(e) {
-      app.touching = false;
+      state.touching = false;
     }).on('mousedown', function(e) {
-      app.touching = true;
+      state.touching = true;
     }).on('mouseup', function(e) {
-      app.touching = false;
+      state.touching = false;
     });
 
     // callback function is optional
-    if (callback) callback(scene, camera, renderer);
+    if (callback) callback(app);
 
     // Windows size change handler
     function resize() {
@@ -62,8 +64,17 @@ var CardboardApp = {
     // Start render loop
     requestAnimationFrame(function loop() {
       requestAnimationFrame(loop);
+
       camera.updateProjectionMatrix();
       controls.update();
+
+      // broadcast update
+      state.dt = clock.getDelta();
+      app.emit('update', {
+        detail: state
+      });
+
+      // render scene
       effect.render(scene, camera);
     });
   },
@@ -74,5 +85,27 @@ var CardboardApp = {
   on: function(eventName, callback) {
     this.renderer.domElement.addEventListener(eventName, callback);
     return this;
+  },
+
+  /**
+   * Utility method to removeEventListener for rendering canvas.
+   */
+  off: function(eventName, callback) {
+    this.renderer.domElement.removeEventListener(eventName, callback);
+    return this;
+  },
+
+  /**
+   * Utility method to dispatch CustomEvent for rendering canvas.
+   */
+  emit: function(eventName, arg) {
+    var event = new CustomEvent(eventName, arg);
+    this.renderer.domElement.dispatchEvent(event);
+    return this;
+  },
+
+  State: function() {
+    this.dt = 0;
+    this.touching = false;
   }
-}
+};

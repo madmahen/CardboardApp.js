@@ -1,4 +1,10 @@
-CardboardApp.init(document.getElementById('example'), function(scene, camera, renderer) {
+CardboardApp.init(function(app) {
+  // CardboardApp === app
+
+  var scene = app.scene,
+    camera = app.camera,
+    renderer = app.renderer;
+
   // init scene with sample contents
   var light = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.4);
   scene.add(light);
@@ -11,26 +17,51 @@ CardboardApp.init(document.getElementById('example'), function(scene, camera, re
   texture.repeat = new THREE.Vector2(100, 100);
   texture.anisotropy = renderer.getMaxAnisotropy();
 
-  var material = new THREE.MeshPhongMaterial({
-    color: 0xffffff,
-    specular: 0x666666,
-    shininess: 20,
-    shading: THREE.FlatShading,
-    map: texture
-  });
+  // Create floor
+  var floor = new THREE.Mesh(
+    new THREE.PlaneBufferGeometry(1000, 1000),
+    new THREE.MeshPhongMaterial({
+      color: 0xffffff,
+      specular: 0x666666,
+      shininess: 20,
+      shading: THREE.FlatShading,
+      map: texture
+    })
+  );
+  floor.rotation.x = -Math.PI / 2;
+  scene.add(floor);
 
-  var geometry = new THREE.PlaneGeometry(1000, 1000);
-
-  var mesh = new THREE.Mesh(geometry, material);
-  mesh.rotation.x = -Math.PI / 2;
-  scene.add(mesh);
-
-  var mesh = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5), new THREE.MeshBasicMaterial({
+  // Create cube
+  var cube = new THREE.Mesh(new THREE.BoxGeometry(5, 5, 5), new THREE.MeshBasicMaterial({
     color: 0xff9900
   }));
 
-  scene.add(mesh);
+  scene.add(cube);
 
+  // Move camera to see a cube
   camera.position.y = 10;
-  camera.position.z = 10;
+  camera.position.z = -10;
+
+  // Add update callback receiver
+  // e.detail is CardboardApp.State object.
+  // e.detail.dt is a result of THREE.Clock.getDelta() for each frames.
+  // e.detail.touching is true while user is touching to screen (with VR kit's button).
+  app.on('update', function(e) {
+    var state = e.detail;
+
+    // Move forward while touching
+    if (state.touching) {
+      var vec = new THREE.Vector3(0, 0, -1);
+      vec.applyQuaternion(camera.quaternion);
+      vec.y = 0; // now vec is forward vector.
+
+      vec.multiplyScalar(10 * state.dt);
+      camera.position.add(vec);
+    }
+  });
+
+  // And be able to add more callback(s)
+  app.on('update', function(e) {
+    cube.rotation.y += 0.5 * e.detail.dt;
+  });
 });
