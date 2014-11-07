@@ -6,23 +6,21 @@ Simple three.js cardboard template. See [demo](http://ejeinc.github.io/cardboard
 ## Template
 
 ```JavaScript
-CardboardApp.init(function(app) {
-  // CardboardApp === app
+var app = new CardboardApp();
+var scene = app.scene,
+  camera = app.camera,
+  renderer = app.renderer;
 
-  var scene = app.scene,
-    camera = app.camera,
-    renderer = app.renderer;
+// Create scene here
+...
 
-  // Create scene here
+app.on('update', function(e) {
+  var state = e.detail;
 
-
-  app.on('update', function(e) {
-  	var state = e.detail;
-
-  	// do something on every frames
-  	// state.touching is true while user is touching screen
-  	// state.dt is delta time from previous frame
-  });
+  // do something on every frames
+  // state.touching is true while user is touching screen
+  // state.dt is delta time from previous frame
+  ...
 });
 ```
 
