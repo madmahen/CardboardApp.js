@@ -16,6 +16,7 @@ function CardboardApp() {
 
   app.scene = new THREE.Scene();
   app.camera = new THREE.PerspectiveCamera(90, 1, 0.01, 1000);
+  app.vr = true;
 
   document.body.appendChild(renderer.domElement);
 
@@ -34,6 +35,7 @@ function CardboardApp() {
 
     app.camera.aspect = width / height;
     app.camera.updateProjectionMatrix();
+    app.vr = (width >= height);
 
     effect.setSize(width, height);
   }
@@ -63,7 +65,7 @@ function CardboardApp() {
     });
 
     // render scene
-    effect.render(app.scene, app.camera);
+    (app.vr ? effect : renderer).render(app.scene, app.camera);
   })();
 }
 
