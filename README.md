@@ -1,4 +1,4 @@
-cardboard-template
+simple-cardboard-template
 ==================
 
 Simple three.js cardboard template. See [demo](http://ejeinc.github.io/cardboard-template/) with your phone. This demo is based on [Chrome Experiments for Cardboard Example](http://vr.chromeexperiments.com/example.html).
