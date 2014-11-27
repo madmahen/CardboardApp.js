@@ -3,7 +3,7 @@ simple-cardboard-template
 
 **This project is for Web app. To build native Android app use [CardboardAppTemplate](https://github.com/ejeinc/CardboardAppTemplate).**
 
-Simple three.js cardboard template. See [demo](http://ejeinc.github.io/simple-cardboard-template/) with your phone. This demo is based on [Chrome Experiments for Cardboard Example](http://vr.chromeexperiments.com/example.html).
+Simple three.js cardboard template. See [demo](http://ejeinc.github.io/CardboardApp.js/) with your phone. This demo is based on [Chrome Experiments for Cardboard Example](http://vr.chromeexperiments.com/example.html).
 
 ## Template
 
