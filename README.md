@@ -1,4 +1,4 @@
-simple-cardboard-template
+CardboardApp.js
 ==================
 
 **This project is for Web app. To build native Android app use [CardboardAppTemplate](https://github.com/ejeinc/CardboardAppTemplate).**
