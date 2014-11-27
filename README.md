@@ -25,3 +25,7 @@ app.on('update', function(e) {
   ...
 });
 ```
+
+## API
+
+See [jsdoc](http://ejeinc.github.io/CardboardApp.js/jsdoc/CardboardApp.html)
