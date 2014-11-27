@@ -13,7 +13,7 @@ var scene = app.scene,
   camera = app.camera,
   renderer = app.renderer;
 
-// Create scene here
+// Add some meshes and lights to scene
 ...
 
 app.on('update', function(e) {
